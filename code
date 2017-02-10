@@ -1,0 +1,58 @@
+import dns.resolver
+
+resolver = dns.resolver.Resolver()
+
+site = 'yahoo.com'
+
+site_ip = resolver.query(site,'A')
+
+print()
+print('WEB SITE :', site.upper())
+print()
+def A_record(site_ip):
+
+    header = 'A record Details'
+    print(header.upper())
+    print('*'*len(header))
+    print()
+    for ip in site_ip:
+        print('{:10}{:2}{}'.format('A record',':',ip))
+
+def Mx_record(site):
+    print()
+    try:
+       
+        header = 'Mail server Details'
+        print(header.upper())
+        print()
+        print('*'*len(header))
+        site_mx_record = resolver.query(site,'MX')
+        for mx in site_mx_record:
+            mx = str(mx).split()[-1]
+            mxIps = resolver.query(mx,'A')
+            for MxIp in mxIps:
+                print('{:30}{:2}{}'.format(mx,'',MxIp))
+    except Exception:   
+        print('Could not find MX record for', site)
+def NameServer(site):
+    try:
+       
+        print()
+        header = 'Nameserver Details'
+        print(header.upper())
+        print()
+        print('*'*len(header))
+        site_name_servers = resolver.query(site,'NS')
+        for name_server in site_name_servers:
+            name_server = str(name_server)
+            Name_server_ips = resolver.query(name_server,'A')
+            for Name_server_ip in Name_server_ips:
+                print('{:20}{:2}{}'.format(name_server,'',Name_server_ip))
+    except Exception:
+       
+        print('\nCould not find nameserver for the',site)
+       
+
+A_record(site_ip)   
+Mx_record(site)
+NameServer(site)
